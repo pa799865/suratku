@@ -26,6 +26,7 @@ function verifySignature(
 export async function POST(request: Request) {
   try {
     const body = await request.json()
+    const supabase = await createServerSupabaseClient()
     console.log('Webhook body:', JSON.stringify(body)) // tambah ini
 
     const {
