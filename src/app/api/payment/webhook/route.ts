@@ -69,19 +69,35 @@ if (isSuccess) {
   const profile = profiles && profiles.length > 0 ? profiles[0] : null
 
   if (profile) {
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({ is_premium: true })
-      .eq('id', profile.id)
+  // 1. Update status Premium
+  const { error: updateError } = await supabase
+    .from('profiles')
+    .update({ is_premium: true })
+    .eq('id', profile.id)
 
-    if (updateError) {
-      console.error('Update premium error:', updateError)
-    } else {
-      console.log('BERHASIL! Premium aktif untuk ID:', profile.id)
-    }
-  } else {
-    console.log('User TIDAK ditemukan untuk prefix:', userIdPrefix)
+  if (updateError) {
+    console.error('Update Profile Error:', updateError)
   }
+
+  // 2. Simpan detail transaksi ke tabel orders/transactions (Opsional)
+  // Pastikan nama tabel kamu benar (misal: 'transactions' atau 'orders')
+  const { error: insertError } = await supabase
+    .from('orders') // Sesuaikan dengan nama tabel kamu
+    .insert({
+      user_id: profile.id,
+      order_id: order_id, // Dari Midtrans
+      amount: gross_amount,
+      status: transaction_status,
+    })
+
+  if (insertError) {
+    console.error('Insert Order Error:', insertError)
+  } else {
+    console.log('Data Order Berhasil Disimpan!')
+  }
+
+  console.log('BERHASIL! Proses selesai untuk ID:', profile.id)
+}
 }
 
     return NextResponse.json({ status: 'ok' })
