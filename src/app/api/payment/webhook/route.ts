@@ -57,10 +57,11 @@ if (isSuccess) {
 
   // Gunakan casting ::text agar operator ilike bekerja pada UUID
   const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('id')
-    .ilike('id::text', `${userIdPrefix}%`)
-    .maybeSingle() // Gunakan maybeSingle agar tidak error jika tidak ditemukan
+  .from('profiles')
+  .select('id')
+  // Gunakan filter manual untuk melakukan casting UUID ke TEXT
+  .filter('id', 'like', `${userIdPrefix}%`) 
+  .maybeSingle()
 
   if (error) {
     console.error('Database error:', error)
