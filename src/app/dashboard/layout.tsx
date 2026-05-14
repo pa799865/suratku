@@ -1,4 +1,5 @@
 'use client'
+export const dynamic = 'force-dynamic'
 // ============================================================
 // app/dashboard/layout.tsx
 // Shared layout untuk semua halaman authenticated
