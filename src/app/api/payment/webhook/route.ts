@@ -7,6 +7,7 @@ import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { NextResponse } from 'next/server'
 import crypto from 'crypto'
 
+
 const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SERVER_KEY!
 
 function verifySignature(
@@ -25,6 +26,8 @@ function verifySignature(
 export async function POST(request: Request) {
   try {
     const body = await request.json()
+    console.log('Webhook body:', JSON.stringify(body)) // tambah ini
+
     const {
       order_id,
       status_code,
@@ -34,52 +37,27 @@ export async function POST(request: Request) {
       fraud_status,
     } = body
 
-    // Verifikasi signature dari Midtrans
-    const isValid = verifySignature(order_id, status_code, gross_amount, signature_key)
-    if (!isValid) {
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
-    }
+    console.log('transaction_status:', transaction_status) // tambah ini
+    console.log('fraud_status:', fraud_status) // tambah ini
 
-    const supabase = await createServerSupabaseClient()
-
-    // Cek apakah pembayaran sukses
+    // ... lanjut kode
+    
     const isSuccess =
       (transaction_status === 'capture' && fraud_status === 'accept') ||
       transaction_status === 'settlement'
 
-    const isFailed =
-      transaction_status === 'cancel' ||
-      transaction_status === 'deny' ||
-      transaction_status === 'expire'
+    console.log('isSuccess:', isSuccess) // tambah ini
 
     if (isSuccess) {
-      // Ambil user dari order
       const { data: order } = await supabase
         .from('orders')
         .select('user_id')
         .eq('order_id', order_id)
         .single()
 
-      if (order) {
-        // Update status premium user
-        await supabase
-          .from('profiles')
-          .update({ is_premium: true })
-          .eq('id', order.user_id)
+      console.log('order found:', order) // tambah ini
 
-        // Update status order
-        await supabase
-          .from('orders')
-          .update({ status: 'success' })
-          .eq('order_id', order_id)
-      }
-    }
-
-    if (isFailed) {
-      await supabase
-        .from('orders')
-        .update({ status: transaction_status })
-        .eq('order_id', order_id)
+      // ...
     }
 
     return NextResponse.json({ status: 'ok' })
