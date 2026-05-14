@@ -50,28 +50,26 @@ export async function POST(request: Request) {
     console.log('isSuccess:', isSuccess) // tambah ini
 
     if (isSuccess) {
-  // Extract user_id dari order_id format: SURATKU-{userId8char}-{timestamp}
   const parts = order_id.split('-')
-  // order_id: SURATKU-46904aa2-1778765515489
-  // parts:    [SURATKU, 46904aa2, 1778765515489]
   const userIdPrefix = parts[1] // 46904aa2
+  
+  console.log('Looking for prefix:', userIdPrefix)
 
-  // Cari user yang id-nya starts with prefix ini
-  const { data: profiles } = await supabase
+  const { data: profile, error } = await supabase
     .from('profiles')
     .select('id')
+    .ilike('id', `${userIdPrefix}%`)
+    .single()
 
-  const matchedProfile = profiles?.find(p => p.id.replace(/-/g, '').startsWith(userIdPrefix))
-  
-  console.log('matched profile:', matchedProfile)
+  console.log('profile:', profile, 'error:', error)
 
-  if (matchedProfile) {
+  if (profile) {
     await supabase
       .from('profiles')
       .update({ is_premium: true })
-      .eq('id', matchedProfile.id)
+      .eq('id', profile.id)
 
-    console.log('Updated premium for:', matchedProfile.id)
+    console.log('Updated premium for:', profile.id)
   }
 }
 
