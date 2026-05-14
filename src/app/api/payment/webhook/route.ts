@@ -50,16 +50,30 @@ export async function POST(request: Request) {
     console.log('isSuccess:', isSuccess) // tambah ini
 
     if (isSuccess) {
-      const { data: order } = await supabase
-        .from('orders')
-        .select('user_id')
-        .eq('order_id', order_id)
-        .single()
+  // Extract user_id dari order_id format: SURATKU-{userId8char}-{timestamp}
+  const parts = order_id.split('-')
+  // order_id: SURATKU-46904aa2-1778765515489
+  // parts:    [SURATKU, 46904aa2, 1778765515489]
+  const userIdPrefix = parts[1] // 46904aa2
 
-      console.log('order found:', order) // tambah ini
+  // Cari user yang id-nya starts with prefix ini
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id')
 
-      // ...
-    }
+  const matchedProfile = profiles?.find(p => p.id.replace(/-/g, '').startsWith(userIdPrefix))
+  
+  console.log('matched profile:', matchedProfile)
+
+  if (matchedProfile) {
+    await supabase
+      .from('profiles')
+      .update({ is_premium: true })
+      .eq('id', matchedProfile.id)
+
+    console.log('Updated premium for:', matchedProfile.id)
+  }
+}
 
     return NextResponse.json({ status: 'ok' })
 
