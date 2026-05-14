@@ -13,6 +13,7 @@ import { SuratResignPDF } from '@/components/pdf-templates/SuratResign'
 import { PerjanjianSewaPDF } from '@/components/pdf-templates/PerjanjianSewa'
 import { SuratLamaranPDF } from '@/components/pdf-templates/SuratLamaran'
 import { createClient } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -53,6 +54,7 @@ const [saved, setSaved] = useState(false)
 const handleSave = async () => {
   setSaving(true)
   const supabase = createClient()
+  const router = useRouter()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
