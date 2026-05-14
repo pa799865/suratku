@@ -1,4 +1,5 @@
 'use client'
+export const dynamic = 'force-dynamic'
 // ============================================================
 // app/dashboard/buat/[slug]/page.tsx
 // ============================================================

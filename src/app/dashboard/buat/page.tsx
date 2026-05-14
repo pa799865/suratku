@@ -1,4 +1,6 @@
 'use client'
+
+export const dynamic = 'force-dynamic'
 // ============================================================
 // app/dashboard/buat/page.tsx
 // Pilih template untuk dibuat (authenticated)

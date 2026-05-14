@@ -1,4 +1,5 @@
 'use client'
+export const dynamic = 'force-dynamic'
 // ============================================================
 // app/dashboard/upgrade/page.tsx
 // ============================================================
