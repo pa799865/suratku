@@ -59,8 +59,8 @@ if (isSuccess) {
   const { data: profile, error } = await supabase
   .from('profiles')
   .select('id')
-  // Gunakan filter manual untuk melakukan casting UUID ke TEXT
-  .filter('id', 'like', `${userIdPrefix}%`) 
+  // Menuliskan instruksi postgrest secara manual
+  .filter('id::text', 'ilike', `${userIdPrefix}%`)
   .maybeSingle()
 
   if (error) {
