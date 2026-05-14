@@ -186,21 +186,87 @@ export const templates: DocumentTemplate[] = [
     ],
   },
   {
-    slug: 'perjanjian-hutang',
-    name: 'Perjanjian Hutang Piutang',
-    description: 'Catat pinjaman dengan cicilan, bunga, dan jatuh tempo.',
-    icon: '💰',
-    isPremium: true,
-    sections: [],
-  },
+  slug: 'perjanjian-hutang',
+  name: 'Perjanjian Hutang Piutang',
+  description: 'Catat pinjaman dengan cicilan, bunga, dan jatuh tempo.',
+  icon: '💰',
+  isPremium: true,
+  sections: [
+    {
+      title: 'Data Pinjaman',
+      icon: '💰',
+      fields: [
+        { id: 'jumlahHutang', label: 'Jumlah Pinjaman (Rp)', type: 'number', placeholder: '10000000', required: true },
+        { id: 'bungaPerBulan', label: 'Bunga per Bulan (%)', type: 'number', placeholder: '2', defaultValue: '0' },
+        { id: 'jumlahCicilan', label: 'Jumlah Cicilan (Bulan)', type: 'number', placeholder: '12', required: true },
+        { id: 'tanggalPinjam', label: 'Tanggal Pinjam', type: 'date', required: true },
+        { id: 'tanggalJatuhTempo', label: 'Tanggal Jatuh Tempo', type: 'date', required: true },
+        { id: 'tujuanPinjaman', label: 'Tujuan Pinjaman', type: 'textarea', placeholder: 'Modal usaha, renovasi rumah, dll.' },
+      ],
+    },
+    {
+      title: 'Pihak Pemberi Pinjaman',
+      icon: '🏦',
+      fields: [
+        { id: 'krediturNama', label: 'Nama Lengkap', type: 'text', placeholder: 'Budi Santoso', required: true },
+        { id: 'krediturKtp', label: 'No. KTP', type: 'text', placeholder: '3201xxxxxxxxxxxxxxx' },
+        { id: 'krediturAlamat', label: 'Alamat', type: 'text', placeholder: 'Jl. Sudirman No. 45, Jakarta' },
+        { id: 'krediturPhone', label: 'No. Telepon', type: 'text', placeholder: '08xxxxxxxxxx' },
+      ],
+    },
+    {
+      title: 'Pihak Peminjam',
+      icon: '🧍',
+      fields: [
+        { id: 'debiturNama', label: 'Nama Lengkap', type: 'text', placeholder: 'Andi Wijaya', required: true },
+        { id: 'debiturKtp', label: 'No. KTP', type: 'text', placeholder: '3578xxxxxxxxxxxxxxx' },
+        { id: 'debiturAlamat', label: 'Alamat', type: 'text', placeholder: 'Jl. Gatot Subroto No. 12, Bandung' },
+        { id: 'debiturPhone', label: 'No. Telepon', type: 'text', placeholder: '08xxxxxxxxxx' },
+      ],
+    },
+  ],
+},
   {
-    slug: 'mou-kerjasama',
-    name: 'MOU / Kerjasama',
-    description: 'Memorandum of Understanding untuk kerjasama bisnis.',
-    icon: '🤝',
-    isPremium: true,
-    sections: [],
-  },
+  slug: 'mou-kerjasama',
+  name: 'MOU / Kerjasama',
+  description: 'Memorandum of Understanding untuk kerjasama bisnis.',
+  icon: '🤝',
+  isPremium: true,
+  sections: [
+    {
+      title: 'Data Kerjasama',
+      icon: '🤝',
+      fields: [
+        { id: 'judulKerjasama', label: 'Judul Kerjasama', type: 'text', placeholder: 'Kerjasama Pengembangan Aplikasi', required: true },
+        { id: 'bidangKerjasama', label: 'Bidang Kerjasama', type: 'text', placeholder: 'Teknologi / Perdagangan / Pendidikan', required: true },
+        { id: 'tujuanKerjasama', label: 'Tujuan Kerjasama', type: 'textarea', placeholder: 'Jelaskan tujuan dan ruang lingkup kerjasama...', required: true },
+        { id: 'tanggalMulai', label: 'Tanggal Mulai', type: 'date', required: true },
+        { id: 'tanggalBerakhir', label: 'Tanggal Berakhir', type: 'date', required: true },
+        { id: 'kotaTtd', label: 'Kota Penandatanganan', type: 'text', placeholder: 'Jakarta', defaultValue: 'Jakarta' },
+      ],
+    },
+    {
+      title: 'Pihak Pertama',
+      icon: '🏢',
+      fields: [
+        { id: 'pihak1Nama', label: 'Nama / Perusahaan', type: 'text', placeholder: 'PT. Maju Bersama', required: true },
+        { id: 'pihak1Jabatan', label: 'Jabatan / Peran', type: 'text', placeholder: 'Direktur Utama' },
+        { id: 'pihak1Alamat', label: 'Alamat', type: 'text', placeholder: 'Jl. Sudirman No. 45, Jakarta' },
+        { id: 'pihak1Phone', label: 'No. Telepon', type: 'text', placeholder: '08xxxxxxxxxx' },
+      ],
+    },
+    {
+      title: 'Pihak Kedua',
+      icon: '🏢',
+      fields: [
+        { id: 'pihak2Nama', label: 'Nama / Perusahaan', type: 'text', placeholder: 'CV. Karya Mandiri', required: true },
+        { id: 'pihak2Jabatan', label: 'Jabatan / Peran', type: 'text', placeholder: 'Direktur' },
+        { id: 'pihak2Alamat', label: 'Alamat', type: 'text', placeholder: 'Jl. Gatot Subroto No. 12, Bandung' },
+        { id: 'pihak2Phone', label: 'No. Telepon', type: 'text', placeholder: '08xxxxxxxxxx' },
+      ],
+    },
+  ],
+},
 ]
 
 // Helper: ambil template by slug

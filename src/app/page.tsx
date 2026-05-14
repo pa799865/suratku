@@ -15,11 +15,11 @@ export default function HomePage() {
           Surat<span className="text-amber-600 italic">Ku</span>
         </span>
         <div className="flex items-center gap-8">
-          <a href="#template" className="text-sm text-stone-500 hover:text-stone-800 transition-colors">Template</a>
-          <a href="#" className="text-sm text-stone-500 hover:text-stone-800 transition-colors">Harga</a>
-          <button className="bg-stone-900 text-white text-sm font-semibold rounded-lg px-5 py-2 hover:bg-amber-600 transition-colors">
-            Masuk
-          </button>
+          <a href="/template" className="text-sm text-stone-500 hover:text-stone-800 transition-colors">Template</a>
+           <a href="/harga" className="text-sm text-stone-500 hover:text-stone-800 transition-colors">Harga</a>
+          <Link href="/login" className="bg-stone-900 text-white text-sm font-semibold rounded-lg px-5 py-2 hover:bg-amber-600 transition-colors">
+  Masuk
+</Link>
         </div>
       </nav>
 
@@ -44,9 +44,7 @@ export default function HomePage() {
           >
             Buat Dokumen Sekarang
           </a>
-          <button className="border border-stone-300 text-stone-700 font-medium rounded-lg px-6 py-3.5 text-sm hover:border-stone-500 hover:bg-stone-100 transition-colors">
-            Lihat Template →
-          </button>
+          <Link href="/template" className="btn-secondary">Lihat Template →</Link>
         </div>
       </section>
 

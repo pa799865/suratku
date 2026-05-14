@@ -1,160 +1,60 @@
 'use client'
-// ============================================================
-// components/pdf-templates/SuratResign.tsx
-// ============================================================
-
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import { Document, Page, Text, View } from '@react-pdf/renderer'
 import { formatTanggal } from '@/lib/templates'
+import { getStyles, type DocStyle } from './styles'
 import type { FormValues } from '@/types'
-
-const styles = StyleSheet.create({
-  page: {
-    fontFamily: 'Helvetica',
-    fontSize: 11,
-    paddingTop: 60,
-    paddingBottom: 60,
-    paddingHorizontal: 60,
-    color: '#1a1a1a',
-    lineHeight: 1.6,
-  },
-  watermark: {
-    position: 'absolute',
-    top: '35%',
-    left: '10%',
-    fontSize: 72,
-    color: '#f0ddd2',
-    transform: 'rotate(-35deg)',
-    opacity: 0.4,
-  },
-  headerRight: {
-    textAlign: 'right',
-    marginBottom: 32,
-  },
-  headerText: {
-    fontSize: 11,
-  },
-  recipientBlock: {
-    marginBottom: 24,
-  },
-  subject: {
-    fontFamily: 'Helvetica-Bold',
-    fontSize: 12,
-    marginBottom: 24,
-    textDecoration: 'underline',
-  },
-  greeting: {
-    marginBottom: 14,
-  },
-  paragraph: {
-    textAlign: 'justify',
-    marginBottom: 12,
-  },
-  bold: {
-    fontFamily: 'Helvetica-Bold',
-  },
-  closing: {
-    marginTop: 24,
-    marginBottom: 60,
-  },
-  signatureName: {
-    fontFamily: 'Helvetica-Bold',
-  },
-  signatureDetail: {
-    color: '#555',
-    fontSize: 10,
-  },
-})
 
 interface Props {
   values: FormValues
   isWatermarked?: boolean
+  docStyle?: DocStyle
 }
 
-export function SuratResignPDF({ values, isWatermarked = true }: Props) {
+export function SuratResignPDF({ values, isWatermarked = true, docStyle = 'formal' }: Props) {
+  const S = getStyles(docStyle)
   const v = (key: string, fallback = '___________') => values[key] || fallback
-
   const kotaTanggal = `${v('kotaSurat', 'Jakarta')}, ${formatTanggal(v('tanggalSurat'))}`
 
   return (
     <Document>
-      <Page size="A4" style={styles.page}>
-
-        {isWatermarked && <Text style={styles.watermark}>PRATINJAU</Text>}
-
-        {/* Tanggal & Kota */}
-        <View style={styles.headerRight}>
-          <Text style={styles.headerText}>{kotaTanggal}</Text>
+      <Page size="A4" style={S.page}>
+        {isWatermarked && <Text style={S.watermark}>PRATINJAU</Text>}
+        <View style={S.kop}>
+          <Text style={S.kopTitle}>SURAT PENGUNDURAN DIRI</Text>
+          <Text style={S.kopSubtitle}>Resignation Letter</Text>
         </View>
-
-        {/* Kepada */}
-        <View style={styles.recipientBlock}>
-          <Text>Kepada Yth.</Text>
-          <Text><Text style={styles.bold}>{v('namaAtasan')}</Text></Text>
-          <Text>{v('namaPerusahaan')}</Text>
-          <Text>di Tempat</Text>
+        <Text style={S.paragraph}>{kotaTanggal}</Text>
+        <View style={S.section}>
+          <Text style={S.paragraph}>Kepada Yth.</Text>
+          <Text style={S.paragraph}><Text style={S.bold}>{v('namaAtasan')}</Text></Text>
+          <Text style={S.paragraph}>{v('namaPerusahaan')}</Text>
+          <Text style={S.paragraph}>di Tempat</Text>
         </View>
-
-        {/* Perihal */}
-        <Text style={styles.subject}>
-          Perihal: Surat Pengunduran Diri
+        <View style={S.section}>
+          <Text style={S.sectionTitle}>Perihal: Pengunduran Diri</Text>
+        </View>
+        <Text style={S.paragraph}>Dengan hormat,</Text>
+        <Text style={S.paragraph}>
+          Saya yang bertanda tangan di bawah ini, <Text style={S.bold}>{v('namaPengirim')}</Text>, dengan jabatan <Text style={S.bold}>{v('jabatan')}</Text>{v('departemen') !== '___________' ? ` di Departemen ${v('departemen')}` : ''}, dengan ini menyampaikan pengunduran diri dari <Text style={S.bold}>{v('namaPerusahaan')}</Text>.
         </Text>
-
-        {/* Salam */}
-        <Text style={styles.greeting}>Dengan hormat,</Text>
-
-        {/* Paragraf 1 — Perkenalan & niat resign */}
-        <Text style={styles.paragraph}>
-          Saya yang bertanda tangan di bawah ini,{' '}
-          <Text style={styles.bold}>{v('namaPengirim')}</Text>,
-          dengan jabatan <Text style={styles.bold}>{v('jabatan')}</Text>
-          {v('departemen') !== '___________' ? ` di Departemen ${v('departemen')}` : ''},
-          dengan ini menyampaikan pengunduran diri saya dari{' '}
-          <Text style={styles.bold}>{v('namaPerusahaan')}</Text>.
+        <Text style={S.paragraph}>
+          Saya bermaksud menjadikan tanggal <Text style={S.bold}>{formatTanggal(v('tanggalTerakhir'))}</Text> sebagai hari terakhir bekerja di perusahaan ini.
         </Text>
-
-        {/* Paragraf 2 — Tanggal terakhir */}
-        <Text style={styles.paragraph}>
-          Sesuai ketentuan yang berlaku, saya bermaksud menjadikan tanggal{' '}
-          <Text style={styles.bold}>{formatTanggal(v('tanggalTerakhir'))}</Text>{' '}
-          sebagai hari terakhir saya bekerja di perusahaan ini.
-        </Text>
-
-        {/* Paragraf 3 — Alasan (opsional) */}
         {values['alasanResign'] && (
-          <Text style={styles.paragraph}>
-            Adapun alasan pengunduran diri saya adalah: {values['alasanResign']}
-          </Text>
+          <Text style={S.paragraph}>Adapun alasan pengunduran diri saya adalah: {values['alasanResign']}</Text>
         )}
-
-        {/* Paragraf 4 — Terima kasih */}
-        <Text style={styles.paragraph}>
-          Selama bekerja di {v('namaPerusahaan')}, saya telah banyak mendapatkan
-          pengalaman dan ilmu yang sangat berharga. Saya mengucapkan terima kasih
-          atas kesempatan, kepercayaan, dan bimbingan yang telah diberikan selama ini.
+        <Text style={S.paragraph}>
+          Selama bekerja di {v('namaPerusahaan')}, saya telah banyak mendapat pengalaman berharga. Saya mengucapkan terima kasih atas kesempatan dan bimbingan yang telah diberikan.
         </Text>
-
-        {/* Paragraf 5 — Komitmen transisi */}
-        <Text style={styles.paragraph}>
-          Saya berkomitmen untuk menyelesaikan seluruh tanggung jawab dan melakukan
-          serah terima pekerjaan dengan baik agar transisi dapat berjalan lancar.
+        <Text style={S.paragraph}>
+          Saya berkomitmen menyelesaikan seluruh tanggung jawab dan melakukan serah terima pekerjaan agar transisi berjalan lancar.
         </Text>
-
-        {/* Penutup */}
-        <Text style={styles.paragraph}>
-          Demikian surat pengunduran diri ini saya sampaikan dengan penuh hormat.
-          Atas perhatian dan pengertian Bapak/Ibu, saya ucapkan terima kasih.
-        </Text>
-
-        {/* Tanda tangan */}
-        <View style={styles.closing}>
-          <Text>Hormat saya,</Text>
+        <Text style={S.paragraph}>Hormat saya,</Text>
+        <View style={{ marginTop: 48 }}>
+          <Text style={S.signatureLine}>{v('namaPengirim')}</Text>
+          <Text style={{ fontSize: 10, color: '#666', marginTop: 4 }}>{v('jabatan')}</Text>
+          {values['departemen'] && <Text style={{ fontSize: 10, color: '#666' }}>{values['departemen']}</Text>}
         </View>
-        <Text style={styles.signatureName}>{v('namaPengirim')}</Text>
-        <Text style={styles.signatureDetail}>{v('jabatan')}</Text>
-        {values['departemen'] && (
-          <Text style={styles.signatureDetail}>{values['departemen']}</Text>
-        )}
-
       </Page>
     </Document>
   )

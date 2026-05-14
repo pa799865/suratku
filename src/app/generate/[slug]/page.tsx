@@ -12,6 +12,7 @@ import { use, useMemo } from 'react'
 import { SuratResignPDF } from '@/components/pdf-templates/SuratResign'
 import { PerjanjianSewaPDF } from '@/components/pdf-templates/PerjanjianSewa'
 import { SuratLamaranPDF } from '@/components/pdf-templates/SuratLamaran'
+import { createClient } from '@/lib/supabase'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -44,6 +45,32 @@ export default function GeneratePage({ params }: Props) {
       return <KontrakFreelancePDF values={values} isWatermarked={true} />
   }
 }, [values, slug])
+
+const [saving, setSaving] = useState(false)
+const [saved, setSaved] = useState(false)
+
+// Tambah fungsi
+const handleSave = async () => {
+  setSaving(true)
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    router.push('/login')
+    return
+  }
+
+  await supabase.from('documents').insert({
+    user_id: user.id,
+    template_slug: slug,
+    template_name: template.name,
+    form_values: values,
+  })
+
+  setSaved(true)
+  setSaving(false)
+  setTimeout(() => setSaved(false), 3000)
+}
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-[#f5f2eb]">
