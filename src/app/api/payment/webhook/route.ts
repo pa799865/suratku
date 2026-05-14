@@ -49,29 +49,38 @@ export async function POST(request: Request) {
 
     console.log('isSuccess:', isSuccess) // tambah ini
 
-    if (isSuccess) {
-  const parts = order_id.split('-')
-  const userIdPrefix = parts[1] // 46904aa2
-  
-  console.log('Looking for prefix:', userIdPrefix)
+   // ... kode lainnya
 
+if (isSuccess) {
+  const parts = order_id.split('-')
+  const userIdPrefix = parts[1] 
+
+  // Gunakan casting ::text agar operator ilike bekerja pada UUID
   const { data: profile, error } = await supabase
     .from('profiles')
     .select('id')
-    .ilike('id', `${userIdPrefix}%`)
-    .single()
+    .ilike('id::text', `${userIdPrefix}%`)
+    .maybeSingle() // Gunakan maybeSingle agar tidak error jika tidak ditemukan
 
-  console.log('profile:', profile, 'error:', error)
+  if (error) {
+    console.error('Database error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
 
   if (profile) {
-    await supabase
+    const { error: updateError } = await supabase
       .from('profiles')
       .update({ is_premium: true })
       .eq('id', profile.id)
-
-    console.log('Updated premium for:', profile.id)
+    
+    if (updateError) console.error('Update error:', updateError)
+    console.log('Updated premium status for:', profile.id)
+  } else {
+    console.log('No profile found with prefix:', userIdPrefix)
   }
 }
+
+// ... rest of the code
 
     return NextResponse.json({ status: 'ok' })
 
