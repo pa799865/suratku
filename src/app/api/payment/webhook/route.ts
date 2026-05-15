@@ -84,12 +84,12 @@ if (isSuccess) {
   // Pastikan nama tabel kamu benar (misal: 'transactions' atau 'orders')
   const { error: insertError } = await supabase
   .from('orders')
-  .insert({
+  .upsert({
     user_id: profile.id,
     order_id: order_id,
-    amount: Math.round(parseFloat(gross_amount)), // ← fix di sini
+    amount: Math.round(parseFloat(gross_amount)),
     status: transaction_status,
-  })
+  }, { onConflict: 'order_id' }) // kalau order_id sudah ada, update saja
 
   if (insertError) {
     console.error('Insert Order Error:', insertError)
