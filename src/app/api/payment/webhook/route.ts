@@ -6,6 +6,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { NextResponse } from 'next/server'
 import crypto from 'crypto'
+import { createAdminClient } from '@/lib/supabase-admin'
 
 
 const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SERVER_KEY!
@@ -26,7 +27,7 @@ function verifySignature(
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const supabase = await createServerSupabaseClient()
+    const supabase = createAdminClient() // bukan createServerSupabaseClient
     console.log('Webhook body:', JSON.stringify(body)) // tambah ini
 
     const {
