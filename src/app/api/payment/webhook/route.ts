@@ -83,13 +83,13 @@ if (isSuccess) {
   // 2. Simpan detail transaksi ke tabel orders/transactions (Opsional)
   // Pastikan nama tabel kamu benar (misal: 'transactions' atau 'orders')
   const { error: insertError } = await supabase
-    .from('orders') // Sesuaikan dengan nama tabel kamu
-    .insert({
-      user_id: profile.id,
-      order_id: order_id, // Dari Midtrans
-      amount: gross_amount,
-      status: transaction_status,
-    })
+  .from('orders')
+  .insert({
+    user_id: profile.id,
+    order_id: order_id,
+    amount: Math.round(parseFloat(gross_amount)), // ← fix di sini
+    status: transaction_status,
+  })
 
   if (insertError) {
     console.error('Insert Order Error:', insertError)
