@@ -131,7 +131,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div style={{ fontSize: '11px', color: '#a09a8e', marginBottom: '10px', lineHeight: 1.5 }}>
               Akses semua style & download tanpa watermark
             </div>
-            <Link href="/harga" style={{
+            <Link href="/dashboard/upgrade" style={{
               display: 'block', textAlign: 'center',
               background: '#c8602a', color: '#fff',
               textDecoration: 'none', fontSize: '12px', fontWeight: '600',

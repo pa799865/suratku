@@ -6,6 +6,7 @@ export const dynamic = 'force-dynamic'
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
+import { useRouter } from 'next/navigation'
 
 interface Profile {
   full_name: string
@@ -23,6 +24,7 @@ export default function PengaturanPage() {
   const [savingPassword, setSavingPassword] = useState(false)
   const [profileMsg, setProfileMsg] = useState('')
   const [passwordMsg, setPasswordMsg] = useState('')
+  const router = useRouter()
 
   useEffect(() => {
     const init = async () => {
@@ -103,6 +105,23 @@ export default function PengaturanPage() {
       color: isError ? '#c0392b' : '#2e7d32',
     }) as React.CSSProperties,
   }
+
+  const handleDeleteAccount = async () => {
+  const konfirmasi = window.confirm(
+    'Apakah kamu yakin ingin menghapus akun? Semua data akan hilang permanen dan tidak bisa dikembalikan.'
+  )
+  if (!konfirmasi) return
+
+  const response = await fetch('/api/account/delete', { method: 'DELETE' })
+  const data = await response.json()
+
+  if (data.success) {
+    await supabase.auth.signOut()
+    router.push('/')
+  } else {
+    alert('Gagal menghapus akun: ' + data.error)
+  }
+}
 
   return (
     <div style={{ maxWidth: '560px' }}>
@@ -198,14 +217,17 @@ export default function PengaturanPage() {
       <div style={{ ...S.card, border: '1px solid #fecaca' }}>
         <h2 style={{ ...S.sectionTitle, color: '#c0392b' }}>Danger Zone</h2>
         <p style={S.sectionDesc}>Tindakan ini tidak dapat dibatalkan.</p>
-        <button style={{
-          background: 'none', border: '1.5px solid #fecaca',
-          color: '#c0392b', borderRadius: '8px',
-          padding: '9px 20px', fontSize: '13px', fontWeight: '600',
-          cursor: 'pointer',
-        }}>
-          Hapus Akun
-        </button>
+       <button
+  onClick={handleDeleteAccount}
+  style={{
+    background: 'none', border: '1.5px solid #fecaca',
+    color: '#c0392b', borderRadius: '8px',
+    padding: '9px 20px', fontSize: '13px', fontWeight: '600',
+    cursor: 'pointer',
+  }}
+>
+  Hapus Akun Permanen
+</button>
       </div>
     </div>
   )
